@@ -12,7 +12,7 @@ const testManualAccountCreation = async () => {
     
     // Test admin login
     console.log('\n📤 Testing admin login...');
-    const adminLogin = await axios.post('https://cs-eventsphere.netlify.app/api/auth/login', {
+    const adminLogin = await axios.post('z/api/auth/login', {
       email: 'admin@eventsphere.com',
       password: 'admin123'
     });
@@ -31,7 +31,7 @@ const testManualAccountCreation = async () => {
       role: "faculty"
     };
     
-    const facultyResponse = await axios.post('https://cs-eventsphere.netlify.app/api/auth/create-account', facultyData, {
+    const facultyResponse = await axios.post('http://localhost:5001/api/auth/create-account', facultyData, {
       headers: { Authorization: `Bearer ${adminToken}` }
     });
     console.log('✅ Faculty account created:', facultyResponse.data);
@@ -51,7 +51,7 @@ const testManualAccountCreation = async () => {
       scholarNumber: `TEST${timestamp}`
     };
     
-    const participantResponse = await axios.post('https://cs-eventsphere.netlify.app/api/auth/create-account', participantData, {
+    const participantResponse = await axios.post('http://localhost:5001/api/auth/create-account', participantData, {
       headers: { Authorization: `Bearer ${adminToken}` }
     });
     console.log('✅ Participant account created:', participantResponse.data);

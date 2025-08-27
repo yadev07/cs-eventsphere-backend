@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const BASE_URL = 'https://cs-eventsphere.netlify.app/api';
+const BASE_URL = 'http://localhost:5001/api';
 let adminToken = '';
 let facultyToken = '';
 let userToken = '';

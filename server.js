@@ -10,8 +10,9 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin:'https://cs-eventsphere.netlify.app',
-  credentials:true
+  origin: "https://cs-eventsphere.netlify.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
