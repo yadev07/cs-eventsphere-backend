@@ -10,7 +10,7 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: "https://cs-eventsphere.netlify.app",
+  origin: ["http://localhost:3000", "https://cs-eventsphere.netlify.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
