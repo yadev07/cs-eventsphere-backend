@@ -353,4 +353,18 @@ eventSchema.statics.search = function(query) {
   });
 };
 
+
+// Pre-save hook to set status based on dates
+eventSchema.pre('save', function(next) {
+  const now = new Date();
+  if (this.endDate && now > this.endDate) {
+    this.status = 'Past';
+  } else if (this.startDate && now < this.startDate) {
+    this.status = 'Upcoming';
+  } else if (this.startDate && this.endDate && now >= this.startDate && now <= this.endDate) {
+    this.status = 'Live';
+  }
+  next();
+});
+
 module.exports = mongoose.model('Event', eventSchema);
