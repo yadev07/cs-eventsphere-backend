@@ -313,10 +313,9 @@ router.post('/', [
     }
 
     const eventData = {
-      ...req.body,
-      createdBy: req.user._id,
-      organizers: [req.user._id],
-      status: 'draft'
+    ...req.body,
+    createdBy: req.user._id,
+    organizers: [req.user._id]
     };
 
     const event = new Event(eventData);
