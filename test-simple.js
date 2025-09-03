@@ -12,7 +12,7 @@ const testManualAccountCreation = async () => {
     
     // Test admin login
     console.log('\n📤 Testing admin login...');
-    const adminLogin = await axios.post('z/api/auth/login', {
+    const adminLogin = await axios.post('http://localhost:5001/api/auth/login', {
       email: 'admin@eventsphere.com',
       password: 'admin123'
     });
