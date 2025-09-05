@@ -599,6 +599,97 @@ router.get('/:id/participants', auth, requireOwnershipOrAdmin(Event, 'id'), asyn
   }
 });
 
+// @route   GET /api/events/:id/related
+// @desc    Get related events
+// @access  Public
+router.get('/:id/related', async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
+    }
+
+    // Find related events based on category and tags
+    const relatedEvents = await Event.find({
+      _id: { $ne: req.params.id },
+      isActive: true,
+      $or: [
+        { category: event.category },
+        { tags: { $in: event.tags || [] } }
+      ]
+    })
+    .populate('createdBy', 'fullName department')
+    .limit(4)
+    .sort({ startDate: 1 });
+
+    res.json({
+      success: true,
+      relatedEvents
+    });
+  } catch (error) {
+    console.error('Get related events error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error getting related events'
+    });
+  }
+});
+
+// @route   POST /api/events/:id/like
+// @desc    Like/Unlike event
+// @access  Private (Authenticated users)
+router.post('/:id/like', auth, async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
+    }
+
+    if (!event.isActive) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
+    }
+
+    const userId = req.user._id;
+    const isLiked = event.likes && event.likes.includes(userId);
+
+    if (isLiked) {
+      // Unlike the event
+      event.likes = event.likes.filter(id => id.toString() !== userId.toString());
+      event.likeCount = Math.max(0, (event.likeCount || 0) - 1);
+    } else {
+      // Like the event
+      if (!event.likes) event.likes = [];
+      event.likes.push(userId);
+      event.likeCount = (event.likeCount || 0) + 1;
+    }
+
+    await event.save();
+
+    res.json({
+      success: true,
+      isLiked: !isLiked,
+      likeCount: event.likeCount
+    });
+  } catch (error) {
+    console.error('Like event error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error updating like status'
+    });
+  }
+});
+
 // @route   GET /api/events/:id/statistics
 // @desc    Get event statistics
 // @access  Private (Event organizers or Admin)
